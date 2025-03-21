@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { Terminal, Code2, Zap, Copy, CheckCircle } from "lucide-react";
 
 function DocsPage() {
-  const [selectedChain, setSelectedChain] = useState<"BASE" | "Ethereum">(
-    "BASE"
+  const [selectedChain, setSelectedChain] = useState<"CORE">(
+    "CORE"
   );
 
   const [copiedAddresses, setCopiedAddresses] = useState<{
@@ -11,16 +11,11 @@ function DocsPage() {
   }>({});
 
   const poolAddresses: {
-    [key in "BASE" | "Ethereum"]: { USDT: string; USDC: string };
+    [key in "CORE"]: { LSTBTC: string };
   } = {
-    BASE: {
-      USDT: "0xBaseUsdtPoolAddress",
-      USDC: "0xBaseUsdcPoolAddress",
-    },
-    Ethereum: {
-      USDT: "0xEthUsdtPoolAddress",
-      USDC: "0xEthUsdcPoolAddress",
-    },
+    CORE:{
+     LSTBTC:"0x3f52E4c6393c81ECE389adb3Eb614395f593C834"
+    }
   };
 
   const handleCopyAddress = (token: string, address: string) => {
@@ -210,11 +205,11 @@ function DocsPage() {
                 className="bg-black text-green-500 p-2 rounded border border-green-500"
                 value={selectedChain}
                 onChange={(e) =>
-                  setSelectedChain(e.target.value as "BASE" | "Ethereum")
+                  setSelectedChain(e.target.value as "CORE")
                 }
               >
-                <option value="BASE">BASE</option>
-                <option value="Ethereum">Ethereum</option>
+                <option value="BASE">CORE</option>
+                
               </select>
             </div>
 
