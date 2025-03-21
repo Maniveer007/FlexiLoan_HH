@@ -9,12 +9,21 @@ pragma solidity >=0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import "./interface/IFlashLoan.sol";
-import "./interface/IFlashLoanReceiver.sol";
 
-contract FlashLoan is  IFlashLoan ,ReentrancyGuard{
+
+interface IFlashLoanReceiver {
+    function executeOperation(
+        address token,
+        uint256 amount,
+        uint256 fee,
+        address initiator,
+        bytes calldata data
+    ) external returns (bool);
+}
+
+
+contract FLEXILOAN is ReentrancyGuard{
     // State variables for managing flash loan operations
-    address public callbackSender;      // Address authorized to send callbacks
     IERC20 public token;                // The ERC20 token used for flash loans
     uint256 public currentEpochId;      // Current epoch for managing liquidity rounds
 
@@ -33,22 +42,34 @@ contract FlashLoan is  IFlashLoan ,ReentrancyGuard{
         uint256 current;      // Current position in the queue
     }
 
+    struct LP {
+        address user;
+        uint256 activeEpochId;
+        uint256 usedAmount;
+    }
+
+    struct withdrawLP{
+        address user;
+        uint256 withdrawAmount;
+    }
+
+
+    event UserUpdated (address indexed user,uint indexed balance,uint indexed approve);
+    event RequestFlashLoan(address indexed receiver,uint indexed amount);
+
     CircularQueue public liquidityQueue;
     mapping(address => uint256) public userIndex;    // Maps user addresses to their queue position
 
     /**
      * @dev Contract constructor
      * @param _token Address of the ERC20 token used for flash loans
-     * @param _callback_sender Address authorized to send callbacks
      * @param _protocol Address receiving protocol fees
      */
     constructor(
         address _token,
-        address _callback_sender,
         address _protocol
-    ) AbstractCallback(_callback_sender) payable {
+    )  payable {
         token = IERC20(_token);
-        callbackSender = _callback_sender;
         PROTOCOL_ADDRESS = _protocol;
         // Initialize queue with dummy LP
         liquidityQueue.queue.push(
