@@ -19,8 +19,8 @@ const INITIAL_POOLS: Pool[] = [
   {
     chainId: 1115,
     chainUrl: "https://s2.coinmarketcap.com/static/img/coins/64x64/23254.png",
-    PoolName: "USDC Pool",
-    tokenName: "USDC",
+    PoolName: "LSTBTC Pool",
+    tokenName: "LSTBTC",
     contractAddress: "0x3f52E4c6393c81ECE389adb3Eb614395f593C834" as `0x{string}`, 
     tokenAddress : "0x7D5d7cE0Bdc2ED8e24f473c6E17ACD7791220405",
     decimals: 18,
